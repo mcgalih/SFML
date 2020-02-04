@@ -13,6 +13,8 @@ int main()
 	// bulat.setOutlineThickness(15); // coba ubah jadi -15
 	// bro
 	// wtf
+	// anjir
+	// tess
 	sf::Texture texture;
 	if (!texture.loadFromFile("sans.png")) // jika statment ini tidak berjalan
 	{
