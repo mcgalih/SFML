@@ -11,10 +11,7 @@ int main()
 	// bulat.setFillColor(sf::Color(255, 0, 0));
 	// bulat.setOutlineColor(sf::Color(0, 255, 0));
 	// bulat.setOutlineThickness(15); // coba ubah jadi -15
-	// bro
-	// wtf
-	// anjir
-	// tess
+	
 	sf::Texture texture;
 	if (!texture.loadFromFile("sans.png")) // jika statment ini tidak berjalan
 	{
