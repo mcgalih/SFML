@@ -23,7 +23,11 @@ public:
 		while (time >= holdtime)
 		{
 			time -= holdtime;
-			advance();
+			if (++iFrame >= nFrames)
+			{
+				iFrame = 0;
+			}
+			// advance();
 		}
 	}
 private:
@@ -50,10 +54,6 @@ public:
 	{ // bukan 50 , seharusnya 64
 		sprite.setTextureRect({ 0,0,64,64 });
 	}
-	void Draw(sf::RenderTarget& rt) const
-	{
-		rt.draw(sprite);
-	}
 	void setDirection(const sf::Vector2f& dir)
 	{
 		vel = dir * speed;
@@ -65,6 +65,11 @@ public:
 		RightWalk.ApllytoSprite(sprite);
 		sprite.setPosition(pos);
 	}
+	void Draw(sf::RenderTarget& rt) const
+	{
+		rt.draw(sprite);
+	}
+
 private:
 	static constexpr float speed = 100.0f;
 	sf::Vector2f pos;
@@ -77,7 +82,7 @@ int main()
 {
 	// create the main window
 	sf::RenderWindow window(sf::VideoMode(800, 600), "SFML window");
-
+	sf::Vector2f tes = { 0,0 };
 	Character mydude({ 100.0f,100.0f });
 
 	// timepoint for delta time measurement (inisialisasi titik waktu pertama)
