@@ -1,6 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
-/*
+
 int main()
 {
 	sf::RenderWindow window(sf::VideoMode(640, 480), "belajar SFML");
@@ -72,4 +72,4 @@ int main()
 
 	}
 	return EXIT_SUCCESS;
-}*/
+}
