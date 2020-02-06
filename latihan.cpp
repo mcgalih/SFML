@@ -8,7 +8,7 @@ int main()
 	// bulat(diameter,kehalusan) coba ubah kehalusan menjadi 3
 	bulat.setRadius(65);
 	bulat.setPointCount(360);
-	bulat.setFillColor(sf::Color(255, 0, 0));
+	// bulat.setFillColor(sf::Color(255, 0, 0));
 	// bulat.setOutlineColor(sf::Color(0, 255, 0));
 	// bulat.setOutlineThickness(15); // coba ubah jadi -15
 	
@@ -32,7 +32,7 @@ int main()
 	// convex.setPoint(2, sf::Vector2f(200, 75));
 	// convex.setPoint(3, sf::Vector2f(45, 120));
 	// convex.setPoint(4, sf::Vector2f(0, 70));
-	/*
+	
 	sf::Vertex garis[] =
 	{
 		sf::Vertex(sf::Vector2f(45,100)), // vector2f(sumbu x, sumbu y)
@@ -44,7 +44,7 @@ int main()
 	// statement dibawah ini akan mengabaikan posisi garis di atas
 	garis[0].position = sf::Vector2f(400, 400);
 	garis[1].position = sf::Vector2f(100, 200);
-	*/
+	
 	while (window.isOpen())
 	{
 		sf::Event event;
