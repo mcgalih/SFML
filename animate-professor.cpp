@@ -52,7 +52,7 @@ class Character
 public:
 	Character(const sf::Vector2f& pos) : pos(pos), RightWalk(64,64*3,64,50)
 	{ // bukan 50 , seharusnya 64
-		sprite.setTextureRect({ 0,0,64,64 });
+		// sprite.setTextureRect({ 0,0,64,64 });
 	}
 	void setDirection(const sf::Vector2f& dir)
 	{
