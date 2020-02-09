@@ -5,7 +5,7 @@
 int main()
 {
 	sf::RenderWindow window(sf::VideoMode(800, 600), "ASLABLOVANIA");
-	
+	/*
 	sf::Texture texture;
 	if (!texture.loadFromFile("animate-sans.png")) // jika statment ini tidak berjalan
 	{
@@ -42,7 +42,27 @@ int main()
 	//sprite.setTextureRect(sf::IntRect(214, 0, 107, 136));
 	//sprite.setTextureRect(sf::IntRect(321, 0, 107, 136));
 	//sprite.setTextureRect(sf::IntRect(428, 0, 107, 136));
-	//sprite.setTextureRect(sf::IntRect(535, 0, 107, 136));
+	//sprite.setTextureRect(sf::IntRect(535, 0, 107, 136));*/
+	sf::Texture texture;
+	if (!texture.loadFromFile("heart.png")) // jika statment ini tidak berjalan
+	{
+		return EXIT_FAILURE;
+	}
+
+	sf::Sprite heart;
+	heart.setTexture(texture);
+	heart.setOrigin(59/2, 55/2);
+	sf::Vector2f pos{ 50,50 };
+
+	sf::ConvexShape health(4);
+	health.setFillColor(sf::Color::Yellow);
+	health.setPosition(100, 100);
+	int lebar = 40, panjang = 100;
+
+	sf::Vector2f vel = { 0.0f,0.0f };
+	const float speed = 300.0f;
+
+	auto tp = std::chrono::steady_clock::now();
 	//start the game loop
 	while (window.isOpen())
 	{
@@ -55,10 +75,12 @@ int main()
 				window.close();
 		}
 
+		
+		
 		const auto new_tp = std::chrono::steady_clock::now();
 		float dt = std::chrono::duration<float>(new_tp - tp).count();
 		tp = new_tp;
-		
+		/*
 		time += dt;
 		
 		if (time >= holdtime)
@@ -88,13 +110,48 @@ int main()
 		sf::Sprite sprite;
 		sprite.setTexture(texture);
 		sprite.setTextureRect(frames[iFrame]);
-		sprite.setPosition(350, 100);
+		sprite.setPosition(350, 100);*/
+		//panjang -= dt;
+		health.setPoint(0, sf::Vector2f(0, 0));
+		health.setPoint(1, sf::Vector2f(panjang, 0));
+		health.setPoint(2, sf::Vector2f(panjang, lebar));
+		health.setPoint(3, sf::Vector2f(0, lebar));
+
+		if(panjang <= 0) panjang += dt;
+
+
+
+		// handle input
+		sf::Vector2f dir = { 0.0f,0.0f };
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+		{
+			dir.y -= 1.0f;
+		}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+		{
+			dir.y += 1.0f;
+		}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+		{
+			dir.x -= 1.0f;
+		}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+		{
+			dir.x += 1.0f;
+		}
+
+		
+		vel = dir * speed;
+		pos += vel * dt;
+		heart.setPosition(pos);
 
 		// update the game
 		window.clear();
 
 		// draw objects here
-		window.draw(sprite);
+		//window.draw(sprite);
+		window.draw(heart);
+		window.draw(health);
 
 		//update the window
 		window.display();
