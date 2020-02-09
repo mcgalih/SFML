@@ -2,10 +2,75 @@
 #include <SFML/Audio.hpp>
 #include <chrono>
 
+class Heart
+{
+public:
+	Heart(const sf::Vector2f& pos) : pos(pos)
+	{
+		texture.loadFromFile("heart.png");
+		sprite = sf::Sprite(texture);
+		sprite.setOrigin(20/2, 18/2);
+	}
+	void Draw(sf::RenderTarget& rt) const
+	{
+		rt.draw(sprite);
+	}
+	void setDirection(const sf::Vector2f& dir, float dt)
+	{
+		vel = dir * speed;
+		pos += vel * dt;
+		sprite.setPosition(pos);
+	}
+	void Update(float dt)
+	{
+		pos += vel * dt;
+		sprite.setPosition(pos);
+	}
+	sf::Vector2f getPosition() { return pos;};
+private:
+	sf::Texture texture;
+	sf::Sprite sprite;
+	sf::Vector2f pos;
+	sf::Vector2f vel = { 0.0f,0.0f };
+	const float speed = 300.0f;
+};
+
+class Health
+{
+public:
+	Health(const sf::Vector2f& pos)
+	{
+		health.setPointCount(4);
+		health.setFillColor(sf::Color::Yellow);
+		health.setPosition(pos);
+		panjang = 100.0f;
+	}
+	void Bar()
+	{
+		health.setPoint(0, sf::Vector2f(0.0f, 0.0f));
+		health.setPoint(1, sf::Vector2f(panjang, 0.0f));
+		health.setPoint(2, sf::Vector2f(panjang, lebar));
+		health.setPoint(3, sf::Vector2f(0.0f, lebar));
+		if (panjang < 0.0f) panjang = 0.0f;
+	}
+	void Damaged(float hit)
+	{
+		panjang -= hit;
+	}
+	void Draw(sf::RenderTarget& rt) const
+	{
+		rt.draw(health);
+	}
+private:
+	sf::ConvexShape health;
+	float panjang, lebar = 40.0f;
+};
+
 int main()
 {
 	sf::RenderWindow window(sf::VideoMode(800, 600), "ASLABLOVANIA");
-	/*
+
+	//===============================sans========================//
 	sf::Texture texture;
 	if (!texture.loadFromFile("animate-sans.png")) // jika statment ini tidak berjalan
 	{
@@ -31,39 +96,14 @@ int main()
 	{
 		frames[i] = { 0 + i * 640/6 , 0, 640/6, 136 };
 	}
-	sf::Clock clock;
-	auto tp = std::chrono::steady_clock::now();
+	//==============================================================//
 
-	//sf::Sprite sprite;
-	//sprite.setTexture(texture);
+	Heart hati({50,50});
+	Health darah({ 100,100 });
 
-	//sprite.setTextureRect(sf::IntRect(0, 0, 107, 136));
-	//sprite.setTextureRect(sf::IntRect(107, 0, 107, 136));
-	//sprite.setTextureRect(sf::IntRect(214, 0, 107, 136));
-	//sprite.setTextureRect(sf::IntRect(321, 0, 107, 136));
-	//sprite.setTextureRect(sf::IntRect(428, 0, 107, 136));
-	//sprite.setTextureRect(sf::IntRect(535, 0, 107, 136));*/
-	sf::Texture texture;
-	if (!texture.loadFromFile("heart.png")) // jika statment ini tidak berjalan
-	{
-		return EXIT_FAILURE;
-	}
-
-	sf::Sprite heart;
-	heart.setTexture(texture);
-	heart.setOrigin(20/2, 18/2);
-	sf::Vector2f pos{ 50,50 };
-
-	sf::ConvexShape health(4);
 	sf::RectangleShape kotak(sf::Vector2f(300.0f,200.0f));
 	kotak.setPosition(200, 200);
 
-	health.setFillColor(sf::Color::Yellow);
-	health.setPosition(100, 100);
-	float lebar = 40.0f, panjang = 100.0f;
-
-	sf::Vector2f vel = { 0.0f,0.0f };
-	const float speed = 300.0f;
 
 	auto tp = std::chrono::steady_clock::now();
 	//start the game loop
@@ -77,13 +117,11 @@ int main()
 			if (event.type == sf::Event::Closed)
 				window.close();
 		}
-
-		
 		
 		const auto new_tp = std::chrono::steady_clock::now();
 		float dt = std::chrono::duration<float>(new_tp - tp).count();
 		tp = new_tp;
-		/*
+		//===============================sans========================//
 		time += dt;
 		
 		if (time >= holdtime)
@@ -108,21 +146,13 @@ int main()
 				holdtime = 0.1f;
 				iFrame = 1;
 			}
-			// advance();
 		}
-		sf::Sprite sprite;
-		sprite.setTexture(texture);
-		sprite.setTextureRect(frames[iFrame]);
-		sprite.setPosition(350, 100);*/
-		//panjang -= dt;
-		health.setPoint(0, sf::Vector2f(0.0f, 0.0f));
-		health.setPoint(1, sf::Vector2f(panjang, 0.0f));
-		health.setPoint(2, sf::Vector2f(panjang, lebar));
-		health.setPoint(3, sf::Vector2f(0.0f, lebar));
-
-		if (panjang <= 0.0f) panjang = 0.0f; 
-
-
+		sf::Sprite sans;
+		sans.setTexture(texture);
+		sans.setTextureRect(frames[iFrame]);
+		sans.setPosition(350, 100);
+		//=======================================================//
+		darah.Bar();
 
 		// handle input
 		sf::Vector2f dir = { 0.0f,0.0f };
@@ -142,27 +172,22 @@ int main()
 		{
 			dir.x += 1.0f;
 		}
-
+		hati.setDirection(dir,dt);
 		
-		
-		vel = dir * speed;
-		pos += vel * dt;
-		heart.setPosition(pos);
 		// membuat area dammage
-		sf::FloatRect luasan = kotak.getGlobalBounds();
-		if (luasan.contains(heart.getPosition())) panjang -= 0.1f;
+		sf::FloatRect hitbox = kotak.getGlobalBounds();
+		if (hitbox.contains(hati.getPosition())) darah.Damaged(10.0f);
 
 		// update the game
 		window.clear();
 
 		// draw objects here
-		//window.draw(sprite);
+		window.draw(sans);
 		window.draw(kotak);
-		window.draw(heart);
-		window.draw(health);
+		hati.Draw(window);
+		darah.Draw(window);
 
 		//update the window
 		window.display();
-
 	}
 }
