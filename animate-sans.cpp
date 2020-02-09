@@ -51,7 +51,7 @@ int main()
 
 	sf::Sprite heart;
 	heart.setTexture(texture);
-	heart.setOrigin(59/2, 55/2);
+	heart.setOrigin(20/2, 18/2);
 	sf::Vector2f pos{ 50,50 };
 
 	sf::ConvexShape health(4);
@@ -120,7 +120,7 @@ int main()
 		health.setPoint(2, sf::Vector2f(panjang, lebar));
 		health.setPoint(3, sf::Vector2f(0.0f, lebar));
 
-		//if(panjang <= 0) panjang += dt;
+		if (panjang <= 0.0f) panjang = 0.0f; 
 
 
 
@@ -150,7 +150,7 @@ int main()
 		heart.setPosition(pos);
 		// membuat area dammage
 		sf::FloatRect luasan = kotak.getGlobalBounds();
-		if (luasan.contains(heart.getPosition())) panjang -= 0.05f;
+		if (luasan.contains(heart.getPosition())) panjang -= 0.1f;
 
 		// update the game
 		window.clear();
