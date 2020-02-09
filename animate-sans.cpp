@@ -101,9 +101,9 @@ int main()
 	Heart hati({50,50});
 	Health darah({ 100,100 });
 
-	sf::RectangleShape kotak(sf::Vector2f(300.0f,200.0f));
-	kotak.setPosition(200, 200);
-
+	sf::RectangleShape kotak(sf::Vector2f(250.0f,150.0f));
+	kotak.setOrigin(250.0f/2.0f, 150.0f/2.0f);
+	kotak.setPosition(400, 350);
 
 	auto tp = std::chrono::steady_clock::now();
 	//start the game loop
@@ -176,7 +176,7 @@ int main()
 		
 		// membuat area dammage
 		sf::FloatRect hitbox = kotak.getGlobalBounds();
-		if (hitbox.contains(hati.getPosition())) darah.Damaged(10.0f);
+		if (hitbox.contains(hati.getPosition())) darah.Damaged(0.5f);
 
 		// update the game
 		window.clear();
