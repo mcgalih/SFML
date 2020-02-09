@@ -55,9 +55,12 @@ int main()
 	sf::Vector2f pos{ 50,50 };
 
 	sf::ConvexShape health(4);
+	sf::RectangleShape kotak(sf::Vector2f(300.0f,200.0f));
+	kotak.setPosition(200, 200);
+
 	health.setFillColor(sf::Color::Yellow);
 	health.setPosition(100, 100);
-	int lebar = 40, panjang = 100;
+	float lebar = 40.0f, panjang = 100.0f;
 
 	sf::Vector2f vel = { 0.0f,0.0f };
 	const float speed = 300.0f;
@@ -112,12 +115,12 @@ int main()
 		sprite.setTextureRect(frames[iFrame]);
 		sprite.setPosition(350, 100);*/
 		//panjang -= dt;
-		health.setPoint(0, sf::Vector2f(0, 0));
-		health.setPoint(1, sf::Vector2f(panjang, 0));
+		health.setPoint(0, sf::Vector2f(0.0f, 0.0f));
+		health.setPoint(1, sf::Vector2f(panjang, 0.0f));
 		health.setPoint(2, sf::Vector2f(panjang, lebar));
-		health.setPoint(3, sf::Vector2f(0, lebar));
+		health.setPoint(3, sf::Vector2f(0.0f, lebar));
 
-		if(panjang <= 0) panjang += dt;
+		//if(panjang <= 0) panjang += dt;
 
 
 
@@ -141,15 +144,20 @@ int main()
 		}
 
 		
+		
 		vel = dir * speed;
 		pos += vel * dt;
 		heart.setPosition(pos);
+		// membuat area dammage
+		sf::FloatRect luasan = kotak.getGlobalBounds();
+		if (luasan.contains(heart.getPosition())) panjang -= 0.05f;
 
 		// update the game
 		window.clear();
 
 		// draw objects here
 		//window.draw(sprite);
+		window.draw(kotak);
 		window.draw(heart);
 		window.draw(health);
 
