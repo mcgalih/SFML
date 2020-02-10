@@ -1,6 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include <chrono>
+#include <iostream>
 
 class Heart
 {
@@ -26,8 +27,14 @@ public:
 		pos += vel * dt;
 		sprite.setPosition(pos);
 	}
-	sf::Vector2f getPosition() { return pos;};
+	sf::Vector2f getPosition(){ return pos;};
+	sf::FloatRect getGlobalBounds()
+	{
+		batas = sprite.getGlobalBounds();
+		return batas;
+	}
 private:
+	sf::FloatRect batas;
 	sf::Texture texture;
 	sf::Sprite sprite;
 	sf::Vector2f pos;
@@ -52,10 +59,11 @@ public:
 		health.setPoint(2, sf::Vector2f(panjang, lebar));
 		health.setPoint(3, sf::Vector2f(0.0f, lebar));
 		if (panjang < 0.0f) panjang = 0.0f;
+		//else if (panjang > 100.0f) panjang = 100.0f;
 	}
 	void Damaged(float hit)
 	{
-		panjang -= hit;
+		panjang += hit;
 	}
 	void Draw(sf::RenderTarget& rt) const
 	{
@@ -99,7 +107,7 @@ int main()
 	//==============================================================//
 
 	Heart hati({50,50});
-	Health darah({ 100,100 });
+	Health darah({ 100,200 });
 
 	sf::RectangleShape kotak(sf::Vector2f(250.0f,150.0f));
 	kotak.setOrigin(250.0f/2.0f, 150.0f/2.0f);
@@ -132,13 +140,13 @@ int main()
 			else if (iFrame == 2) holdtime = 0.1f;
 			else if (iFrame == 3)
 			{
-				sound.play();
+				//sound.play();
 				holdtime = 0.5f;
 			}
 			else if (iFrame == 4) holdtime = 0.1f;
 			else if (iFrame == 5)
 			{
-				sound.play();
+				//sound.play();
 				holdtime = 0.5f;
 			}
 			else if (iFrame >= nFrames)
@@ -153,36 +161,48 @@ int main()
 		sans.setPosition(350, 100);
 		//=======================================================//
 		darah.Bar();
-
-		// handle input
-		sf::Vector2f dir = { 0.0f,0.0f };
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+		if (hati.getGlobalBounds().intersects(kotak.getGlobalBounds()))
 		{
-			dir.y -= 1.0f;
+			sf::Vector2f dir = { 0.0f,0.0f };
+			if (hati.getPosition().x <= kotak.getPosition().x) dir.x -= 1.0f;
+			else if (hati.getPosition().y <= kotak.getPosition().y) dir.y -= 1.0f;
+			else if (hati.getPosition().x >= kotak.getPosition().x) dir.x += 1.0f;
+			else if (hati.getPosition().y >= kotak.getPosition().y) dir.y += 1.0f;
+			hati.setDirection(dir, dt);
 		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+		else
 		{
-			dir.y += 1.0f;
+			// handle input
+			sf::Vector2f dir = { 0.0f,0.0f };
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+			{
+				dir.y -= 1.0f;
+			}
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+			{
+				dir.y += 1.0f;
+			}
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+			{
+				dir.x -= 1.0f;
+			}
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+			{
+				dir.x += 1.0f;
+			}
+			hati.setDirection(dir, dt);
 		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-		{
-			dir.x -= 1.0f;
-		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-		{
-			dir.x += 1.0f;
-		}
-		hati.setDirection(dir,dt);
-		
 		// membuat area dammage
 		sf::FloatRect hitbox = kotak.getGlobalBounds();
-		if (hitbox.contains(hati.getPosition())) darah.Damaged(0.5f);
+		sf::FloatRect outside = kotak.getLocalBounds();
+		//if (hitbox.contains(hati.getPosition())) darah.Damaged(-0.5f);
+
 
 		// update the game
 		window.clear();
 
 		// draw objects here
-		window.draw(sans);
+		//window.draw(sans);
 		window.draw(kotak);
 		hati.Draw(window);
 		darah.Draw(window);
