@@ -127,6 +127,10 @@ int main()
 	sf::RectangleShape kanan(sf::Vector2f(1.0f, 150.0f));
 	kanan.setPosition(526.0f, 275.0f);
 	////////////////////////////////////////////////////////////////////
+	// tes menampilkan kotak pada rentang waktu tertentu
+	sf::Clock clock;
+	sf::RectangleShape bro(sf::Vector2f(20,20));
+
 	auto tp = std::chrono::steady_clock::now();
 	//start the game loop
 	while (window.isOpen())
@@ -154,13 +158,13 @@ int main()
 			else if (iFrame == 2) holdtime = 0.1f;
 			else if (iFrame == 3)
 			{
-				sound.play();
+				//sound.play();
 				holdtime = 0.5f;
 			}
 			else if (iFrame == 4) holdtime = 0.1f;
 			else if (iFrame == 5)
 			{
-				sound.play();
+				//sound.play();
 				holdtime = 0.5f;
 			}
 			else if (iFrame >= nFrames)
@@ -207,8 +211,9 @@ int main()
 		//sf::FloatRect hitbox = kotak.getGlobalBounds();
 		//if (hitbox.contains(hati.getPosition())) darah.Damaged(-0.5f);
 
-
 		// update the game
+		sf::Time elapsed = clock.getElapsedTime();
+		std::cout << elapsed.asSeconds() << std::endl;
 		window.clear();
 
 		// draw objects here
@@ -216,6 +221,11 @@ int main()
 		window.draw(kotak);
 		hati.Draw(window);
 		darah.Draw(window);
+		if (elapsed.asSeconds() >= 5)
+		{
+			if (elapsed.asSeconds() > 10) clock.restart();
+			else window.draw(bro);
+		}
 
 		//update the window
 		window.display();
