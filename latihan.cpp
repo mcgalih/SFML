@@ -1,4 +1,4 @@
-#include <SFML/Graphics.hpp>
+ #include <SFML/Graphics.hpp>
 #include <iostream>
 
 int main()
@@ -13,7 +13,7 @@ int main()
 	// bulat.setOutlineThickness(15); // coba ubah jadi -15
 	
 	sf::Texture texture;
-	if (!texture.loadFromFile("sans.png")) // jika statment ini tidak berjalan
+	if (!texture.loadFromFile("image/sans.png")) // jika statment ini tidak berjalan
 	{
 		std::cout << "gagal menampilkan gambar";
 	}

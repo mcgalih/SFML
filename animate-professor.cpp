@@ -6,7 +6,7 @@ class Animation
 public:
 	Animation(int x, int y, int width, int height)
 	{
-		texture.loadFromFile("professor_walk_cycle_no_hat.png");
+		texture.loadFromFile("image/professor_walk_cycle_no_hat.png");
 		for (int i = 0; i < nFrames; i++)
 		{
 			frames[i] = { x + i * width , y, width, height };

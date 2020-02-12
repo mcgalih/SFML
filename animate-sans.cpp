@@ -8,7 +8,7 @@ class Heart
 public:
 	Heart(const sf::Vector2f& pos) : pos(pos)
 	{
-		texture.loadFromFile("heart.png");
+		texture.loadFromFile("image/heart.png");
 		sprite = sf::Sprite(texture);
 		sprite.setOrigin(17/2, 15/2);
 	}
@@ -49,7 +49,8 @@ public:
 	{
 		health.setPointCount(4);
 		health.setPosition(pos);
-		panjang = 150.0f;
+		health.setFillColor(sf::Color::Yellow);
+		panjang = 100.0f;
 	}
 	void Bar()
 	{
@@ -58,7 +59,7 @@ public:
 		health.setPoint(2, sf::Vector2f(panjang, lebar));
 		health.setPoint(3, sf::Vector2f(0.0f, lebar));
 		if (panjang < 0.0f) panjang = 0.0f;
-		else if (panjang > 150.0f) panjang = 150.0f;
+		else if (panjang > 100.0f) panjang = 100.0f;
 	}
 	void Damaged(float hit)
 	{
@@ -79,29 +80,27 @@ int main()
 
 	//===============================sans========================//
 	sf::Texture texture;
-	if (!texture.loadFromFile("animate-sans.png")) // jika statment ini tidak berjalan
+	if (!texture.loadFromFile("image/animate-sans-normal.png")) // jika statment ini tidak berjalan
 	{
 		return EXIT_FAILURE;
 	}
 
+	sf::Sprite sans;
+	sans.setTexture(texture);
 	sf::SoundBuffer buffer;
+	buffer.loadFromFile("audio/GIOVANIA.ogg");
+	sf::Sound bgm;
+	bgm.setBuffer(buffer);
+	bgm.play();
 
-	if (!buffer.loadFromFile("audio/Undertale Sound Effect - Notice.wav"))
-	{
-		return EXIT_FAILURE;
-	}
-
-	sf::Sound sound;
-	sound.setBuffer(buffer);
-
-	const int nFrames = 6;
+	const int nFrames = 9;
 	float holdtime = 0.1f;
 	sf::IntRect frames[nFrames];
 	int iFrame = 0;
 	float time = 0.0f;
 	for (int i = 0; i < nFrames; i++)
 	{
-		frames[i] = { 0 + i * 640/6 , 0, 640/6, 136 };
+		frames[i] = { 0 + i * 828/9 , 0, 828/9, 134 };
 	}
 	//==============================================================//
 
@@ -154,7 +153,7 @@ int main()
 		{
 			time -= holdtime;
 			++iFrame;
-			if (iFrame == 1) holdtime = 0.1f;
+			/*if (iFrame == 1) holdtime = 0.1f;
 			else if (iFrame == 2) holdtime = 0.1f;
 			else if (iFrame == 3)
 			{
@@ -166,17 +165,16 @@ int main()
 			{
 				//sound.play();
 				holdtime = 0.5f;
-			}
-			else if (iFrame >= nFrames)
+			}*/
+			if (iFrame >= nFrames)
 			{
 				holdtime = 0.1f;
 				iFrame = 1;
 			}
 		}
-		sf::Sprite sans;
-		sans.setTexture(texture);
 		sans.setTextureRect(frames[iFrame]);
-		sans.setPosition(350, 100);
+		sans.setOrigin(92 / 2, 134 / 2);
+		sans.setPosition(window.getSize().x/2,(window.getSize().y/2)-120);
 		//=======================================================//
 		darah.Bar();
 
@@ -213,7 +211,6 @@ int main()
 
 		// update the game
 		sf::Time elapsed = clock.getElapsedTime();
-		std::cout << elapsed.asSeconds() << std::endl;
 		window.clear();
 
 		// draw objects here
@@ -221,11 +218,11 @@ int main()
 		window.draw(kotak);
 		hati.Draw(window);
 		darah.Draw(window);
-		if (elapsed.asSeconds() >= 5)
+		/*if (elapsed.asSeconds() >= 5)
 		{
 			if (elapsed.asSeconds() > 10) clock.restart();
 			else window.draw(bro);
-		}
+		}*/
 
 		//update the window
 		window.display();
