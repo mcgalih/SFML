@@ -32,7 +32,6 @@ int main()
 
 	Heart hati({400.0f,350.0f});
 	Health darah({ 500,230 });
-	Movement arah;
 
 	// tes menampilkan kotak pada rentang waktu tertentu
 	sf::Clock clock;
@@ -81,10 +80,7 @@ int main()
 		sans.setPosition(window.getSize().x/2,(window.getSize().y/2)-120);
 		//=======================================================//
 		darah.Bar();
-
-		sf::Vector2f dir = { 0.0f,0.0f };
-		arah.limit(hati, dir);
-		hati.setDirection(dir, dt);
+		hati.Movement(dt);
 		// membuat area dammage
 		//sf::FloatRect hitbox = kotak.getGlobalBounds();
 		//if (hitbox.contains(hati.getPosition())) darah.Damaged(-0.5f);
@@ -95,7 +91,6 @@ int main()
 
 		// draw objects here
 		window.draw(sans);
-		arah.Draw(window);
 		hati.Draw(window);
 		darah.Draw(window);
 		/*if (elapsed.asSeconds() >= 5)
