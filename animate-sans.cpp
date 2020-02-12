@@ -1,78 +1,4 @@
-#include <SFML/Graphics.hpp>
-#include <SFML/Audio.hpp>
-#include <chrono>
-#include <iostream>
-
-class Heart
-{
-public:
-	Heart(const sf::Vector2f& pos) : pos(pos)
-	{
-		texture.loadFromFile("image/heart.png");
-		sprite = sf::Sprite(texture);
-		sprite.setOrigin(17/2, 15/2);
-	}
-	void Draw(sf::RenderTarget& rt) const
-	{
-		rt.draw(sprite);
-	}
-	void setDirection(const sf::Vector2f& dir, float dt)
-	{
-		vel = dir * speed;
-		pos += vel * dt;
-		sprite.setPosition(pos);
-	}
-	void Update(float dt)
-	{
-		pos += vel * dt;
-		sprite.setPosition(pos);
-	}
-	sf::Vector2f getPosition(){ return pos;};
-	sf::FloatRect getGlobalBounds()
-	{
-		batas = sprite.getGlobalBounds();
-		return batas;
-	}
-private:
-	sf::FloatRect batas;
-	sf::Texture texture;
-	sf::Sprite sprite;
-	sf::Vector2f pos;
-	sf::Vector2f vel = { 0.0f,0.0f };
-	const float speed = 300.0f;
-};
-
-class Health
-{
-public:
-	Health(const sf::Vector2f& pos)
-	{
-		health.setPointCount(4);
-		health.setPosition(pos);
-		health.setFillColor(sf::Color::Yellow);
-		panjang = 100.0f;
-	}
-	void Bar()
-	{
-		health.setPoint(0, sf::Vector2f(0.0f, 0.0f));
-		health.setPoint(1, sf::Vector2f(panjang, 0.0f));
-		health.setPoint(2, sf::Vector2f(panjang, lebar));
-		health.setPoint(3, sf::Vector2f(0.0f, lebar));
-		if (panjang < 0.0f) panjang = 0.0f;
-		else if (panjang > 100.0f) panjang = 100.0f;
-	}
-	void Damaged(float hit)
-	{
-		panjang += hit;
-	}
-	void Draw(sf::RenderTarget& rt) const
-	{
-		rt.draw(health);
-	}
-private:
-	sf::ConvexShape health;
-	float panjang, lebar = 30.0f;
-};
+#include "animate-sans.h"
 
 int main()
 {
@@ -106,26 +32,8 @@ int main()
 
 	Heart hati({400.0f,350.0f});
 	Health darah({ 500,230 });
-	////////////////////////limit pergerakan////////////////////////////
-	sf::RectangleShape kotak(sf::Vector2f(250.0f,150.0f));
-	kotak.setOrigin(250.0f/2.0f, 150.0f/2.0f);
-	kotak.setFillColor(sf::Color::Black);
-	kotak.setOutlineThickness(4);
-	kotak.setOutlineColor(sf::Color::White);
-	kotak.setPosition(400, 350);
+	Movement arah;
 
-	sf::RectangleShape atas(sf::Vector2f(250.0f,1.0f));
-	atas.setPosition(275.0f, 275.0f);
-
-	sf::RectangleShape bawah(sf::Vector2f(250.0f, 1.0f));
-	bawah.setPosition(275.0f, 425.0f);
-
-	sf::RectangleShape kiri(sf::Vector2f(1.0f, 150.0f));
-	kiri.setPosition(274.0f, 275.0f);
-
-	sf::RectangleShape kanan(sf::Vector2f(1.0f, 150.0f));
-	kanan.setPosition(526.0f, 275.0f);
-	////////////////////////////////////////////////////////////////////
 	// tes menampilkan kotak pada rentang waktu tertentu
 	sf::Clock clock;
 	sf::RectangleShape bro(sf::Vector2f(20,20));
@@ -166,11 +74,7 @@ int main()
 				//sound.play();
 				holdtime = 0.5f;
 			}*/
-			if (iFrame >= nFrames)
-			{
-				holdtime = 0.1f;
-				iFrame = 1;
-			}
+			if (iFrame >= nFrames) iFrame = 1;
 		}
 		sans.setTextureRect(frames[iFrame]);
 		sans.setOrigin(92 / 2, 134 / 2);
@@ -179,31 +83,7 @@ int main()
 		darah.Bar();
 
 		sf::Vector2f dir = { 0.0f,0.0f };
-		// batas pergerakan
-		if (atas.getGlobalBounds().intersects(hati.getGlobalBounds())) dir.y += 1.0f;
-		else if (bawah.getGlobalBounds().intersects(hati.getGlobalBounds())) dir.y -= 1.0f;
-		else if (kiri.getGlobalBounds().intersects(hati.getGlobalBounds())) dir.x += 1.0f;
-		else if (kanan.getGlobalBounds().intersects(hati.getGlobalBounds())) dir.x -= 1.0f;
-		else
-		{
-			// input arah gerak
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-			{
-				dir.y -= 1.0f;
-			}
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-			{
-				dir.y += 1.0f;
-			}
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-			{
-				dir.x -= 1.0f;
-			}
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-			{
-				dir.x += 1.0f;
-			}
-		}
+		arah.limit(hati, dir);
 		hati.setDirection(dir, dt);
 		// membuat area dammage
 		//sf::FloatRect hitbox = kotak.getGlobalBounds();
@@ -215,7 +95,7 @@ int main()
 
 		// draw objects here
 		window.draw(sans);
-		window.draw(kotak);
+		arah.Draw(window);
 		hati.Draw(window);
 		darah.Draw(window);
 		/*if (elapsed.asSeconds() >= 5)
